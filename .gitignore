@@ -4,14 +4,6 @@ wandb/*
 !wandb/wandb/
 wandb/wandb/*
 !wandb/wandb/.temp
-*.png
-*.jpg
-*.h5
-*.pt
-*.tif
-*.mat
-*.npz
-*.gif
 results/
 
 # Byte-compiled / optimized / DLL files
