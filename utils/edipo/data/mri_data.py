@@ -203,7 +203,7 @@ class DeepinvSliceDataset(SliceDataset):
         generator: torch.Generator = torch.Generator(),
     ):
         super().__init__(
-            root,
+            Path(root),
             set_name,
             transform,
             use_dataset_cache,

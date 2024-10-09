@@ -2,7 +2,6 @@ from munch import DefaultMunch
 from argparse import ArgumentParser
 import wandb
 import json
-from pathlib import Path
 
 import numpy as np
 import torch
@@ -18,7 +17,7 @@ from utils import Trainer, patient_random_split, ArtifactRemovalCRNN, CRNN, Deep
 # python train_demo.py --loss "ddei" --epochs 50 --data_dir "/home/s2558406/RDS/data/CMRxRecon"
 
 parser = ArgumentParser()
-parser.add_argument("--data_dir", type=str, default="data/", help="Root dir for CMRxRecon data")
+parser.add_argument("--data_dir", type=str, default="data/CMRxRecon", help="Root dir for CMRxRecon data")
 parser.add_argument("--mask", type=str, default="TimeVaryingGaussianMask08", help="Subfolder name containing masks")
 parser.add_argument("--loss", type=str, default="ddei", help="Name of loss")
 parser.add_argument("--model", type=str, default="ArtifactRemovalCRNN", help="Name of model")
@@ -56,7 +55,7 @@ with wandb.init(project="cmr-experiments", config=config, dir="./wandb"):
 
     # Define data   
     dataset = DeepinvSliceDataset(
-        Path(config.data_dir), 
+        root=config.data_dir, 
         transform=CineNetDataTransform(time_window=12, apply_mask=True, normalize=True), 
         set_name="TrainingSet",
         acc_folders=["FullSample"],
