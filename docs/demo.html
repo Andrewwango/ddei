@@ -98,17 +98,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <p>Paper | <a href="https://github.com/Andrewwango/ddei">Repo</a> | <a href="https://andrewwango.github.io/ddei">Website</a></p>
 <p><img src="img/demo_results.gif" class="img-fluid"></p>
-<p><strong>Aim</strong>: reconstruct dynamic MRI videos from accelerated undersampled measurements.</p>
+<p><strong>Aim</strong>: reconstruct dynamic MRI videos from accelerated undersampled measurements <span class="math inline">\(\mathbf{y}=\mathbf{Ax}\)</span> where <span class="math inline">\(\mathbf{A}\)</span> is an undersampled Fourier operator.</p>
 <p><strong>Applications</strong>: real-time cardiac imaging, free-breathing motion, vocal tract speech…</p>
 <p><strong>Goals</strong>:</p>
 <ul>
 <li>Capture true motion: aperiodicities, irregularities: real-time MRI</li>
 <li>Capture higher spatiotemporal resolution with fewer measurements (leading to faster, cheaper, portable MRI)</li>
 </ul>
-<p><strong>Why is it hard?</strong> ground truth is impossible to truly obtain! There is no such thing as true fully-sampled dynamic MRI data at the same frame rate. Hence all supervised methods are fundamentally flawed - a <a href="https://www.pnas.org/doi/full/10.1073/pnas.2117203119"><em>data crime</em></a>. The best pseudo-ground-truth, e.g.&nbsp;retrospective gating/cine imaging, must assume periodicity and all methods that use this cannot capture true motion - ultimately what we want to image. Therefore we need unsupervised methods.</p>
-<p><strong>Our method</strong> we posit that the unknown set of MRI videos is <span class="math inline">\(G\)</span>-invariant.</p>
-<p><a href="https://openaccess.thecvf.com/content/ICCV2021/papers/Chen_Equivariant_Imaging_Learning_Beyond_the_Range_Space_ICCV_2021_paper.pdf">Equivariant Imaging</a></p>
-<p>etc.</p>
+<p><strong>Why is it hard?</strong> ground truth is impossible to truly obtain! There is no such thing as true fully-sampled dynamic MRI data at the same frame rate as the measurement data. Hence all supervised methods (<a href="https://aapm.onlinelibrary.wiley.com/doi/10.1002/mp.14809">CineNet</a>, <a href="https://link.springer.com/chapter/10.1007/978-3-031-52448-6_39">transformers</a>…) are fundamentally flawed - an implicit <a href="https://www.pnas.org/doi/full/10.1073/pnas.2117203119"><em>data crime</em></a>. The best pseudo-ground-truth, e.g.&nbsp;gating/cine imaging, must assume periodicity and all methods that use this cannot capture true motion and its irregularities - which is often of interest in medical imaging. Therefore we need unsupervised methods.</p>
+<p><strong>Our method</strong> we posit that the unknown set <span class="math inline">\(\mathcal{X}\)</span> of MRI videos is <span class="math inline">\(G\)</span>-invariant: <span class="math inline">\(\forall x\in\mathcal{X},g\cdot x\in\mathcal{X}\forall g\in G\)</span>. We propose a spatiotemporal group combining temporal invariance and diffeomorphic invariance: see our paper for more details. We use the <a href="https://openaccess.thecvf.com/content/ICCV2021/papers/Chen_Equivariant_Imaging_Learning_Beyond_the_Range_Space_ICCV_2021_paper.pdf">Equivariant Imaging</a> framework to constrain this with a ground-truth-free loss, which we call <strong>D</strong>ynamic <strong>D</strong>iffeomorphic <strong>E</strong>quivariant <strong>I</strong>maging (<strong>DDEI</strong>).</p>
+<p><strong>Results</strong>: see <a href="#full-results">below</a>.</p>
 <p>You can easily implement our method using the <a href="https://deepinv.github.io"><code>deepinv</code></a> library. See <a href="train.py">train.py</a> for a full training demo including training and evaluating competitors. For example:</p>
 <div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
@@ -127,7 +126,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="define-the-ddei-loss-function" class="level3">
 <h3 class="anchored" data-anchor-id="define-the-ddei-loss-function">Define the DDEI loss function:</h3>
-<p>See <a href="train.py">train.py</a> for full demo of how to train with competitors’ losses using <a href="https://deepinv.github.io">deepinv</a>.</p>
+<p>See <a href="train.py">train.py</a> for full demo of how to train with competitors’ losses using <a href="https://deepinv.github.io"><code>deepinv</code></a>.</p>
 <div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>transform <span class="op">=</span> dinv.transform.ShiftTime() <span class="op">|</span> (dinv.transform.CPABDiffeomorphism() <span class="op">|</span> dinv.transform.Rotate())</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>loss <span class="op">=</span> [dinv.loss.MCLoss(), dinv.loss.EILoss(transform<span class="op">=</span>transform)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -144,6 +143,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="define-the-data" class="level3">
 <h3 class="anchored" data-anchor-id="define-the-data">Define the data:</h3>
+<p>We use a real-world cardiac 2D+t dataset from the <a href="https://cmrxrecon.github.io/">2023 CMRxRecon challenge</a>. This dataset has fully-sampled cine measurements which we use as GT for evaluation, but we emphasise our method does not require gated GT for training. We then simulate 2D+t random Cartesian undersampling masks. For more details on how to get started see <a href="train.py">train.py</a>.</p>
 <div class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>dataset <span class="op">=</span> DeepinvSliceDataset(</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    root<span class="op">=</span><span class="st">"data/CMRxRecon"</span>,</span>
