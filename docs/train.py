@@ -12,10 +12,6 @@ import deepinv as dinv
 
 from utils import Trainer, patient_random_split, ArtifactRemovalCRNN, CRNN, DeepinvSliceDataset, CineNetDataTransform
 
-# TODO add instructions for preparing data
-# TODO add models/ folder and data/ dir with CMRxRecon desired data structure
-# python train_demo.py --loss "ddei" --epochs 50 --data_dir "/home/s2558406/RDS/data/CMRxRecon"
-
 parser = ArgumentParser()
 parser.add_argument("--data_dir", type=str, default="data/CMRxRecon", help="Root dir for CMRxRecon data")
 parser.add_argument("--mask", type=str, default="TimeVaryingGaussianMask08", help="Subfolder name containing masks")

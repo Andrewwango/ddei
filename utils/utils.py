@@ -1,6 +1,7 @@
-from pathlib import Path
+from pathlib import Path, WindowsPath
 from collections import defaultdict
 from dataclasses import dataclass
+from contextlib import contextmanager
 
 from torch import Generator, randperm
 from torch.utils.data import Subset
@@ -64,3 +65,12 @@ def patient_random_split(dataset, train_frac=0.8, sax_slices_per_vol=-1, lax_sli
 
     # Create datasets
     return Subset(dataset, slices_train), Subset(dataset, slices_test)
+
+@contextmanager
+def set_posix_windows():
+    posix_backup = PosixPath
+    try:
+        PosixPath = WindowsPath
+        yield
+    finally:
+        PosixPath = posix_backup
