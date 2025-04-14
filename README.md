@@ -14,7 +14,7 @@ Reconstructing dynamic MRI image sequences from undersampled accelerated measure
 
 - **Overview, pretrained demo**: see [website](https://andrewwango.github.io/ddei)
 - **Data**: download the dataset from the [2023 CMRxRecon challenge website](https://www.synapse.org/Synapse:syn51471091/wiki/622170) and move the fully sampled data from `FullSample` into our folder structure in `data/`
-- **Training**: to get started with training see our [training script](train.py).
+- **Training**: to get started with training see our [training script](train.py) that extensively uses the [DeepInverse library](https://deepinv.github.io/).
 
 ## Full video results
 
