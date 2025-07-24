@@ -4,7 +4,7 @@
 
 #### Citation
 
-> A. Wang and M. Davies, [_"Fully unsupervised dynamic MRI reconstruction via diffeo-temporal equivariance"_](https://arxiv.org/abs/2410.08646), Oct. 2024, arXiv
+> A. Wang and M. Davies, [_"Fully unsupervised dynamic MRI reconstruction via diffeo-temporal equivariance"_](https://arxiv.org/abs/2410.08646), [International Symposium on Biomedical Imaging (ISBI) 2025](https://biomedicalimaging.org/2025/), Houston, USA.
 
 ## Abstract
 
