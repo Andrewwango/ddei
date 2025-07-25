@@ -84,7 +84,7 @@ with wandb.init(project="cmr-experiments", config=config, dir="./wandb"):
         case "ei-r":
             losses = [mcloss, dinv.loss.EILoss(rotate)]
         case "ddei":
-            losses = [mcloss, dinv.loss.EILoss(tempad | (diffeo | rotate))]
+            losses = [mcloss, dinv.loss.EILoss((diffeo | rotate) | tempad)]
         case "t-ssdu" | "t-ssdu*":
             losses = [dinv.loss.SplittingLoss(
                 split_ratio=0.6, 
